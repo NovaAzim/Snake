@@ -1,0 +1,8 @@
+import java.awt.*;
+
+public class ScoreMultiplierSnack extends Rectangle {
+    public ScoreMultiplierSnack(int w, int h) {
+        super(200,200 , w, h);
+
+    }
+}
