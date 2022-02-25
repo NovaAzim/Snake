@@ -1,0 +1,10 @@
+import java.awt.*;
+public class Snack extends Rectangle {
+
+        public Snack(int w, int h) {
+                super(100,200 , w, h);
+
+        }
+
+
+}
