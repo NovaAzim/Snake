@@ -1,0 +1,205 @@
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
+public class Snake extends GDV5 {
+        private static Tile[] board;
+        private SnakeBody s = new SnakeBody(5);
+        Snack snack = new Snack(20, 20);
+        ScoreMultiplierSnack powerUp = new ScoreMultiplierSnack(20,20);
+        Images images = new Images();
+        private int count = 0;
+        private Tile head;
+        int speed;
+     SoundDriver sound;
+    String[] filenames = new String[2];
+        public Snake() {
+            super();
+            filenames[0] = "chompingsound";
+            sound = new SoundDriver(filenames,this);
+
+            head = s.body.get(0);
+            makeBoard();
+        }
+    public void eatsSnack(Snack snack) {
+        if(snack.x == s.body.get(0).getX() && snack.y == s.body.get(0).getY()) {
+           // sound.play(0);
+            s.addBody();
+            int multiplier = (int)(Math.random() * 37) +1;
+            snack.x = multiplier * 20;
+            snack.y = multiplier * 20;
+            s.score++;
+        }
+        if(powerUp.x == s.body.get(0).getX() && powerUp.y == s.body.get(0).getY()) {
+            // sound.play(0);
+            int multiplierForPowerUp;
+            if(s.score % 10 == 0) {
+                multiplierForPowerUp = (int)(Math.random() * 37) + 1;
+            } else {
+                multiplierForPowerUp = 0;
+            }
+            powerUp.x = multiplierForPowerUp * 20;
+            powerUp.y = multiplierForPowerUp * 20;
+            s.score = s.score + 5;
+        }
+    }
+
+
+
+
+        public static void main(String[] args) {
+            Snake s = new Snake();
+            s.start();
+            s.update();
+            s.makeBoard();
+
+        }
+
+
+        @Override
+        public void update() {
+            if (GDV5.KeysTyped[KeyEvent.VK_1]) {
+                speed = 20;
+                count++;
+                head.setHeadDirection();
+                eatsSnack(snack);
+                if (count % speed == 0) {
+                    head.updateDirection(board);
+                    s.updateBodyDirection(board);
+                    s.move();
+                }
+                if (s.score % 5 == 0 && speed > 0) {
+                    speed -= 1;
+                }
+            }
+                if (GDV5.KeysTyped[KeyEvent.VK_2]) {
+                    speed = 15;
+                    count++;
+                    head.setHeadDirection();
+                    eatsSnack(snack);
+                    if (count % speed == 0) {
+                        head.updateDirection(board);
+                        s.updateBodyDirection(board);
+                        s.move();
+                    }
+                    if (s.score % 5 == 0 && speed > 0) {
+                        speed -= 1;
+                    }
+                }
+                    if (GDV5.KeysTyped[KeyEvent.VK_3]) {
+                        speed = 10;
+                        count++;
+                        head.setHeadDirection();
+                        eatsSnack(snack);
+                        if (count % speed == 0) {
+                            head.updateDirection(board);
+                            s.updateBodyDirection(board);
+                            s.move();
+                        }
+                        if (s.score % 5 == 0 && speed > 0) {
+                            speed -= 1;
+                        }
+                    }
+                }
+
+
+                @Override
+                public void draw (Graphics2D win) {
+                    win.setColor(Color.GREEN);
+                    win.setFont(new Font("Courier", Font.BOLD, 35));
+                    win.drawString("Welcome To Snake", 250, 300);
+                    win.setFont(new Font("Courier", Font.ITALIC, 25));
+                    win.setColor(Color.RED);
+                    win.drawString(("Press '1' for level 1, '2' for level 2, and '3' for level 3"), 110, 340);
+                    win.setFont(new Font("Courier", Font.HANGING_BASELINE, 35));
+                    win.setColor(Color.blue);
+                    win.drawString("Controls ", 335, 390);
+                    win.drawString("A: Move Left", 310, 440);
+                    win.drawString("D: Move Right", 305, 485);
+                    win.drawString("W: Move Up", 305, 525);
+                    win.drawString("S: Move Down", 300, 565);
+                    win.setColor(Color.YELLOW);
+                    win.setFont(new Font("Courier", Font.BOLD, 30));
+                    win.drawString("Made By Azim Ahmed", 250, 620);
+
+                    if (GDV5.KeysTyped[KeyEvent.VK_1] || GDV5.KeysTyped[KeyEvent.VK_2] || GDV5.KeysTyped[KeyEvent.VK_3]) {
+                        win.setColor(Color.BLACK);
+                        win.setFont(new Font("Courier", Font.BOLD, 35));
+                        win.drawString("Welcome To Snake", 250, 300);
+                        win.setFont(new Font("Courier", Font.ITALIC, 25));
+                        win.drawString(("Press '1' for level 1, '2' for level 2, and '3' for level 3"), 110, 340);
+                        win.setFont(new Font("Courier", Font.HANGING_BASELINE, 35));
+                        win.drawString("Controls ", 335, 390);
+                        win.drawString("A: Move Left", 310, 440);
+                        win.drawString("D: Move Right", 305, 485);
+                        win.drawString("W: Move Up", 305, 525);
+                        win.drawString("S: Move Down", 300, 565);
+                        win.setFont(new Font("Courier", Font.BOLD, 30));
+                        win.drawString("Made By Azim Ahmed", 250, 620);
+
+                        win.setColor(Color.white);
+                        win.setFont(new Font("Courier", Font.BOLD, 40));
+                        win.drawString(String.valueOf(s.score), 410, 50);
+                        win.setColor(Color.YELLOW);
+                        win.drawImage(images.snakeHead,(int)s.body.get(0).getX(), (int)s.body.get(0).getY(), this);
+                        if(GDV5.KeysTyped[KeyEvent.VK_2] || GDV5.KeysTyped[KeyEvent.VK_3]) {
+                            win.drawImage(images.apple, snack.x, snack.y, this);
+                        }
+                        win.setColor(Color.red);
+                        s.drawSnake(win);
+                        if (GDV5.KeysTyped[KeyEvent.VK_1]) {
+                                drawBoard(win);
+                                win.setColor(Color.yellow);
+                                win.fill(snack);
+                        }
+                        if (GDV5.KeysTyped[KeyEvent.VK_1]||GDV5.KeysTyped[KeyEvent.VK_2]) {
+                            win.setColor(Color.blue);
+                            win.fillOval(powerUp.x,powerUp.y,powerUp.width,powerUp.height);
+                        }
+                    }
+                    for (int i = 1; i < s.body.size() - 1; i++) {
+                        if (s.body.get(0).intersects(s.body.get(i)) || head.getX() >= GDV5.getMaxWindowX() || head.getY() >= GDV5.getMaxWindowY() || head.getX() <= 0 || head.getY() <= 0) {
+                            s.unDrawSnake(win);
+
+                            win.setColor(Color.BLACK);
+                            win.fillOval(powerUp.x,powerUp.y,powerUp.width,powerUp.height);
+                            win.drawString(String.valueOf(s.score), 410, 50);
+                            unDrawBoard(win);
+                            win.fill(snack);
+                            win.setColor(Color.green);
+                            win.drawString("Game Over!", 300, 390);
+                            win.setColor(Color.red);
+                            win.drawString("Score: " + String.valueOf(s.score), 330, 430);
+                        }
+                    }
+        }
+
+
+                void drawBoard (Graphics2D pb){
+                    for (Tile t : board) {
+                        t.draw(pb);
+                    }
+                }
+        void unDrawBoard (Graphics2D pb){
+            for (Tile t : board) {
+                t.unDraw(pb);
+            }
+        }
+
+                public void makeBoard () {
+                    int width = GDV5.getMaxWindowX();
+                    int height = GDV5.getMaxWindowY();
+                    int x = 0;
+                    int y = 0;
+                    board = new Tile[1600];
+                    for (int i = 0; i < board.length; i++) {
+                        board[i] = new Tile(x, y);
+                        x += board[i].getDimension();
+                        if (i != 0 && i % 40 == 0) {
+                            x = 0;
+                            y += board[i].getDimension();
+                        }
+
+
+                    }
+                }
+            }
