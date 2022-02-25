@@ -1,0 +1,84 @@
+import java.awt.*;
+import java.util.ArrayList;
+
+public class SnakeBody {
+    ArrayList<Tile> body;
+    int score;
+
+    public SnakeBody(int size) {
+
+        body = new ArrayList<Tile>();
+        body.add(new Tile(GDV5.getMaxWindowX() / 2, GDV5.getMaxWindowY() / 2));
+        body.get(0).setDirection(1);
+        addBody(size - 1,body.get(0).getDirection());
+
+    }
+    public void addBody() {
+        int x = (int) body.get(body.size()-1).getX();
+        int y = (int) body.get(body.size()-1).getY();
+        int boxSize = body.get(body.size()-1).getDimension();
+        int direction = body.get(body.size()-1).getDirection();
+       if(direction == 2) {
+           y += boxSize;
+       }
+        if( direction == 4) {
+            y -= boxSize;
+        }
+       if(direction == 3) {
+           x-=boxSize;
+       }
+        if(direction ==1) {
+            x+=boxSize;
+        }
+        body.add(new Tile(x,y,direction));
+    }
+
+    public void addBody(int size) {
+        int x = (int) body.get(0).getX();
+        int y = (int) body.get(0).getY();
+        for (int i = 0; i < size; i++) {
+            x += body.get(0).getDimension();
+            body.add(new Tile(x+body.get(0).getDimension(),y));
+
+        }
+    }
+    public void addBody(int size, int direction) {
+        int x = (int)body.get(0).getX();
+        int y = (int)body.get(0).getY();
+        for(int i = 0; i < size; i++) {
+            body.add(new Tile(x+ body.get(0).getDimension(),y,direction));
+            x+= body.get(0).getDimension();
+        }
+    }
+
+
+    public void updateBodyDirection(Tile[] board) {
+        for (int i = 0; i < board.length; i++) {
+            for(int j = 1; j < body.size(); j++) {
+                if (body.get(j).getX() == board[i].getX() && body.get(j).getY() == board[i].getY()) {
+                    body.get(j).setDirection(board[i].getDirection());
+                 }
+            }
+        }
+    }
+
+    public void drawSnake(Graphics2D pb) {
+        for (int i =1;i <body.size();i++) {
+            pb.fillOval(body.get(i).x,body.get(i).y,body.get(i).width,body.get(i).height);
+        }
+
+    }
+    public void unDrawSnake(Graphics2D pb) {
+        for (Tile t : body) {
+            t.unFill(pb);
+        }
+
+        }
+    public void move() {
+        for (Tile t : body) {
+            t.move();
+        }
+    }
+
+
+}
